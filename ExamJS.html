@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+	<link rel="stylesheet" href="ExamJS.css">
+    <script>
+        var arBooks = [[1,"Book1","Author5",2000, "Publisher2", 110, 1], [2,"Book3","Author4",2010, "Publisher3", 10, 10], 
+			[3,"Book4","Author3",2003, "Publisher5", 113, 9], [4,"Book2","Author2",2004, "Publisher4", 114, 4], [5,"Book5","Author1",2005, "Publisher1", 115, 5]];
+        var arVisitors = [[1,"FIO1","8(123)1234567"], [2,"FIO2","8(123)7654321"], 
+			[3,"FIO3","8(123)1111111"], [4,"FIO4","8(123)7777777"], [5,"FIO5","8(123)5555555"], [6,"FIO6","8(123)7777777"], [7,"FIO7","8(123)5555555"]];
+        var arCards = [[1,1,2,"2024-01-01","2024-02-01"], [2,2,2,"2024-02-01","2024-03-01"],[3,3,3,"2024-02-01","2024-03-01"],[4,4,4,"2024-02-01","2024-03-01"],
+			[5,5,5,"2024-02-01","2024-03-01"], [6,3,5,"2024-02-01","2024-03-01"], [7,3,5,"2024-01-01","2024-03-01"],[8,5,5,"2024-03-01","2024-04-01"], [9,3,5,"2024-04-01","2024-05-01"], [10,3,5,"2024-06-01","2024-07-01"]];
+		var
+			ObjOneBook = [0,"","",0, "", 0, 0];
+			ObjOneVisitor = [0,"",""];			
+			ObjOneCard = [0,0,0,"",""];			
+			
+    </script>
+</head>
+   
+<body>
+	<div id="top"></div>
+	
+	<header>	 
+		<div class="logo">
+		<h1>LIBRARY</h1>
+		
+		</div>
+	</header> 
+	<section>
+		<nav class="mainMenu">
+		  <ol class="menu-main">
+		  
+			<li><a href="javascript:displayBooksPage('');">Books</a></li>
+			<li><a href="javascript:displayVisitorsPage('')">Visitors</a></li>
+			<li><a href="javascript:displayCardsPage('')">Cards</a></li>
+			<li><a href="javascript:displayStatisticsPage('')">Statistics</a></li>
+		  </ol>
+		</nav>   
+	</section>
+	<section class="inform">
+		
+		<div ID="PreTbl" >
+		
+	
+		</div>
+		<div ID="SortSearch">
+		
+	
+		</div>
+		<div ID="tbl">
+		
+	
+		</div>
+	</section>
+		<script>
+			//--------------------------any functions
+			function getBook(aID){
+				for(index in arBooks){
+					if (arBooks[index][0]==aID){ return arBooks[index][1]}
+				}				
+				return "";
+			}
+			function getVisitor(aID){
+				for(index in arVisitors){
+					if (arVisitors[index][0]==aID){ return arVisitors[index][1]}
+				}				
+				return "";
+			}
+			function GetMaxID(ar){
+				var MaxID = 0;
+				for (var i=0;i<ar.length;i++) {
+					if (MaxID<ar[i][0]) {MaxID=ar[i][0]}
+				}
+				return ++MaxID;
+			}
+			function cancelDialog(){
+				document.getElementById("top").innerHTML = "";			
+			}
+			
+			//-------------------------display info pages
+			function displayBooksPage(){
+				document.getElementById("PreTbl").innerHTML = "<div><h3 class='all'>All books: <input  type='button' name='AddBookBtn' class='allBtn' value='New book'"+
+				"onclick='javascript:AddBook()'/></h3></div>";
+				document.getElementById("PreTbl").style = "min-height: 30px; border-bottom: #ddd;border-bottom-style: solid;";
+				document.getElementById("SortSearch").innerHTML = "<div class='sortSearch'><div class='Sort'>Sort by: <select name='Select' ID='Select'><option selected "+
+					"value=1>ID</option><option value=2>Book name</option><option value=3>Book author</option><option value=4>Publish year</option><option "+ 
+					"value=5>Publisher</option><option value=6>Pages</option><option value=7>Count books</option></select><input type='button' class='SortBtn' name='SortBookBtn'"+
+					"value='Sort' onclick='javascript:SortBook()'/></div>"+
+					"<div class='Search'> Search :  <input type='text' name='SearchBook' ID='SearchBook'><input type='button' class='SearchBtn' value='Search'"+
+					"onclick='javascript:displayBooks(document.getElementById(`SearchBook`).value)'/></div></div>";
+				displayBooks('');
+			}
+			function displayVisitorsPage(){
+				document.getElementById("PreTbl").innerHTML = "<div><h3 class='all'>All visitors: <input type='button' name='AddVisitorBtn' class='allBtn' value='New visitor' onclick='javascript:AddVisitor()'/></h3></div>";
+				document.getElementById("PreTbl").style = "            min-height: 30px;								border-bottom: #ddd;			border-bottom-style: solid;";
+				document.getElementById("SortSearch").innerHTML = "<div class='sortSearch'><div class='Sort'>Sort by: <select name='Select' ID='Select' ><option selected value=1>ID</option><option value=2>Visitor name</option><option value=3>Visitor telephone</option></select><input type='button' name='SortVisitorBtn' class='SortBtn' value='Sort' onclick='javascript:SortVisitor()'/></div>"+
+										"<div class='Search'> Search :  <input type='text' name='SearchVisitor' ID='SearchVisitor'><input type='button' class='SearchBtn' value='Search' onclick='javascript:displayVisitors(document.getElementById(`SearchVisitor`).value)'/></div></div>";
+				displayVisitors('');
+			}
+			function displayCardsPage(){
+				document.getElementById("PreTbl").innerHTML = "<div><h3 class='all'>All cards: <input type='button' name='AddCardBtn' class='allBtn' value='New card' onclick='javascript:AddCard()'/></h3></div>";				
+				document.getElementById("PreTbl").style = "            min-height: 30px;								border-bottom: #ddd;			border-bottom-style: solid;";
+				document.getElementById("SortSearch").innerHTML = "<div class='sortSearch'><div class='Sort'>Sort by: <select name='Select' ID='Select'><option selected value=1>ID</option><option value=2>Book name</option><option value=3>Visitor name</option></select><input type='button' name='SortCardBtn' value='Sort' class='SortBtn' onclick='javascript:SortCard()'/></div>"+
+										"<div class='Search'> Search :  <input type='text' name='SearchCard' ID='SearchCard'><input type='button' class='SearchBtn'  value='Search' onclick='javascript:displayCards(document.getElementById(`SearchCard`).value)'/></div></div>";
+				displayCards('');
+			}
+			function displayStatisticsPage(){
+				document.getElementById("PreTbl").innerHTML = "";				
+				document.getElementById("PreTbl").style = "";
+				document.getElementById("SortSearch").innerHTML = "";
+				let tmp = "<h3>Most popular books</h3><table  align='center' class='Tbl'>";
+				tmp+="<tr> <th>Book name</th><th>Count output</th></tr>";
+				let arCounts=[[0,0]];
+				let flag=false;
+				for(index in arCards){
+					flag=false;
+					for (let jj=0; jj<arCounts.length;jj++){
+						if (arCards[index][1] == arCounts[jj][0]) {
+							arCounts[jj][1]++;
+							flag=true;
+							break;						
+						}						
+					}
+					if (!flag) {arCounts.push([arCards[index][1], 1]);}
+				}
+				sortedArr = arCounts.sort((arr1, arr2) => arr2[1] - arr1[1]);
+				arCounts = sortedArr;
+
+				for (let jj=0; jj<Math.min(arCounts.length, 5);jj++){
+					if (arCounts[jj][0]!=0){
+						tmp+="<tr><td>"+getBook(arCounts[jj][0])+"</td><td ID='colNum'>"+arCounts[jj][1]+"</td></tr>";   
+					}
+				}
+				tmp+="</table>";
+				
+				tmp+= "<h3>Most active visitors</h3><table  align='center' class='Tbl'>";
+				tmp+="<tr> <th>Visitor name</th><th>Count output</th></tr>";
+				arCounts=[[0,0]];
+				flag=false;
+				for(index in arCards){
+					flag=false;
+					for (let jj=0; jj<arCounts.length;jj++){
+						if (arCards[index][2] == arCounts[jj][0]) {
+							arCounts[jj][1]++;
+							flag=true;
+							break;						
+						}						
+					}
+					if (!flag) {arCounts.push([arCards[index][2], 1]);}
+				}
+				sortedArr = arCounts.sort((arr1, arr2) => arr2[1] - arr1[1]);
+				arCounts = sortedArr;
+				for (let jj=0; jj<Math.min(arCounts.length, 5);jj++){
+					if (arCounts[jj][0]!=0){
+						tmp+="<tr><td>"+getVisitor(arCounts[jj][0])+"</td><td ID='colNum'>"+arCounts[jj][1]+"</td></tr>";   
+					}
+				}
+				tmp+="</table>";
+				document.getElementById("tbl").innerHTML = tmp;
+			}
+
+			function displayBooks(ASearch){
+				let tmp = "<table  align='center' class='Tbl'>";
+				tmp+="<tr> <th>ID</th><th>Name</th><th>Author</th><th>Year</th><th>Publisher</th><th>Pages</th><th>Count</th><th>Edit</th></tr>";
+				let count=0;
+				let flag=false;
+				for(index in arBooks){
+					if (ASearch != "") {
+						flag=false;
+						for (let jj=0; jj<arBooks[index].length;jj++){
+							if (String(arBooks[index][jj]).indexOf(ASearch)>-1) {
+								flag = true;
+								break;
+							}
+						}
+						if (flag) {
+							tmp+="<tr><td ID='colNum'>"+arBooks[index][0]+"</td><td >"+arBooks[index][1]+"</td><td>"+arBooks[index][2]+"</td><td ID='colNum2'>"+arBooks[index][3]+"</td><td>"+arBooks[index][4]+"</td><td ID='colNum'>"+arBooks[index][5]+"</td><td ID='colNum'>"+arBooks[index][6]+"</td><td ID='editBtn'><img class='editImg' src='edit.png' onclick='javascript:EditBook("+arBooks[index][0]+")'></img></td></tr>";   
+						}
+					}
+					else {
+						tmp+="<tr><td ID='colNum'>"+arBooks[index][0]+"</td><td>"+arBooks[index][1]+"</td><td>"+arBooks[index][2]+"</td><td ID='colNum2'>"+arBooks[index][3]+"</td><td>"+arBooks[index][4]+"</td><td ID='colNum'>"+arBooks[index][5]+"</td><td ID='colNum'>"+arBooks[index][6]+"</td><td ID='editBtn'><img class='editImg' src='edit.png' onclick='javascript:EditBook("+arBooks[index][0]+")'></img></td></tr>";
+					}
+				}
+				tmp+="</table>";
+				document.getElementById("tbl").innerHTML = tmp;
+				//console.log(tmp);
+			}
+			function displayVisitors(ASearch){
+				let flag=false;
+				let tmp = "<table  align='center' class='Tbl'>";
+				tmp+="<tr> <th>ID</th><th>Name</th><th>Telephone</th><th>Edit</th></tr>";
+				for(index in arVisitors){
+					if (ASearch != "") {
+						flag=false;
+						for (let jj=0; jj<arVisitors[index].length;jj++){
+							if (String(arVisitors[index][jj]).indexOf(ASearch)>-1) {
+								flag = true;
+								break;
+							}
+						}
+						if (flag) {
+							tmp+="<tr><td ID='colNum'>"+arVisitors[index][0]+"</td><td>"+arVisitors[index][1]+"</td><td ID='colNum2'>"+arVisitors[index][2]+"</td><td ID='editBtn'><img class='editImg' src='edit.png' onclick='javascript:EditVisitor("+arVisitors[index][0]+")'></img></tr>";
+						}
+					}
+					else {
+						tmp+="<tr><td ID='colNum'>"+arVisitors[index][0]+"</td><td>"+arVisitors[index][1]+"</td><td ID='colNum2'>"+arVisitors[index][2]+"</td><td ID='editBtn'><img class='editImg' src='edit.png' onclick='javascript:EditVisitor("+arVisitors[index][0]+")'></img></tr>";
+					}
+				}
+				tmp+="</table>";
+				document.getElementById("tbl").innerHTML = tmp;
+				//console.log(tmp);
+			}
+			function displayCards(ASearch){
+				console.log(ASearch);
+				var s3 = "";
+				var s4 = "";
+				let tmp = "<table  align='center' class='Tbl'>";
+				tmp+="<tr> <th>ID</th><th>Visitor</th><th>Book</th><th>Borrow date</th><th>Return date</th></tr>";
+				let flag=false;
+				for(var index=0; index< arCards.length;index++){
+					s3 = "";
+					s4 = "";
+					if (ASearch != "") {						
+						//console.log('ASearch !=');
+						flag=false;
+						if (String(arCards[index][0]).indexOf(ASearch)>-1 || getVisitor(arCards[index][1]).indexOf(ASearch)>-1 || getBook(arCards[index][2]).indexOf(ASearch)>-1 || String(arCards[index][3]).indexOf(ASearch)>-1 || String(arCards[index][4]).indexOf(ASearch)>-1) {
+							flag = true;
+							console.log(arCards[index][0]+"*"+arCards[index][1]+"*"+arCards[index][2]+"*"+arCards[index][3]+"*"+arCards[index][4]+"*");
+							
+						}
+						if (flag) {
+							if (arCards[index][3] !="") s3 = Intl.DateTimeFormat('ru').format(Date.parse(arCards[index][3]));
+							if (arCards[index][4] !="") s4 = "<td ID='colNum2'>"+Intl.DateTimeFormat('ru').format(Date.parse(arCards[index][4]))+"</td>"; else s4="<td ID='editBtn'><img class='editImg' src='edit.png' onclick='javascript:EditCard("+arCards[index][0]+")'></img></td>";
+							tmp+="<tr><td ID='colNum'>"+arCards[index][0]+"</td><td>"+getVisitor(arCards[index][1])+"</td><td>"+getBook(arCards[index][2])+"</td><td ID='colNum2'>"+s3+"</td>"+s4+"</tr>";
+						}
+					}
+					else {
+						if (arCards[index][3] !="") s3 = Intl.DateTimeFormat('ru').format(Date.parse(arCards[index][3]));
+						if (arCards[index][4] !="") s4 = "<td ID='colNum2'>"+Intl.DateTimeFormat('ru').format(Date.parse(arCards[index][4]))+"</td>";  else s4="<td ID='editBtn'><img class='editImg' src='edit.png' onclick='javascript:EditCard("+arCards[index][0]+")'></img>";;
+						tmp+="<tr><td ID='colNum'>"+arCards[index][0]+"</td><td>"+getVisitor(arCards[index][1])+"</td><td>"+getBook(arCards[index][2])+"</td><td ID='colNum2'>"+s3+"</td>"+s4+"</tr>";
+					}
+				}
+				tmp+="</table>";
+				document.getElementById("tbl").innerHTML = tmp;
+				console.log(ASearch);
+			}
+
+			//----------------------Books
+			function ShowDialogEditBook(DialogText){
+				let flagDisable="";
+				if (ObjOneBook[1]=='' && ObjOneBook[2]=='' && ObjOneBook[4]=='') {
+					flagDisable=" disabled ";
+				}
+				var stmp="<div id='newsletter' class='popup-wrapper'>"+
+					"<div class='popup-inner'>"+
+					"<div class='subscribe-content'>"+
+				"<div class='form-group subscribe-form-group'>"+
+					"<form class=''>"+					
+						"<div class='EditBook'><h3>"+DialogText+"</h3>"+
+						"<div>ID:<input type='text' name='ID' ID='BookID' disabled value='"+ObjOneBook[0]+"'></div>"+
+						"<div>Book:<input type='text' name='Book' ID='BookName' value='"+ObjOneBook[1]+"'></div>"+
+						"<div>Author:<input type='text' name='Author' ID='AuthorName' value='"+ObjOneBook[2]+"'></div>"+
+						"<div>Year:<input type='number' name='Year' ID='Year' value='"+ObjOneBook[3]+"'></div>"+
+						"<div>Publisher:<input type='text' name='Publisher' ID='Publisher' value='"+ObjOneBook[4]+"'></div>"+
+						"<div>Count page:<input type='number' name='CountPage' ID='CountPage' value='"+ObjOneBook[5]+"'></div>"+
+						"<div>Count books:<input type='number' name='CountBooks' ID='CountBooks' value='"+ObjOneBook[6]+"'></div>"+
+						"<div class='DlgBtn'>"+
+						"<input  type='button' name='SaveBookBtn' class='SaveBtn' value='Save' onclick='javascript:saveBook()'>"+
+						"<input  type='button' name='DeleteBookBtn' class='DelBtn' value='Del' "+flagDisable+" onclick='javascript:DelBook()'>"+ //
+						"<input  type='button' name='CancelBookBtn' class='CancelBtn' value='Cancel' onclick='javascript:cancelDialog()'>"+
+						"</div></div>"+						
+					"</form>"+
+				"</div></div></div></div>";
+				document.getElementById("top").innerHTML = stmp;
+			}
+			function AddBook(){
+				ObjOneBook[0] = GetMaxID(arBooks);
+				ObjOneBook[1] = "";ObjOneBook[2] = "";
+				ObjOneBook[3] = 2000;ObjOneBook[4] = ""; 
+				ObjOneBook[5] = 1; ObjOneBook[6] = 1;
+				ShowDialogEditBook("Enter new book");
+			}
+			function DelBook(){
+				let num = -1;
+				for (var i=0;i<arBooks.length;i++) {
+					if (arBooks[i][0]==ObjOneBook[0]) {
+						num = i;
+						break;
+					}
+				}
+				if (num != -1){
+					arBooks.splice(num, 1);
+				}
+				cancelDialog();
+				displayBooks('');
+			}
+			function EditBook(aID){
+ 				for (var i=0;i<arBooks.length;i++) {
+					if (arBooks[i][0]==aID) {
+						for (var j=0;j<arBooks[i].length;j++) {
+							ObjOneBook[j] = arBooks[i][j];
+						}
+					}
+				}
+				ShowDialogEditBook("Edit book information");
+			}
+			function saveBook(){
+				flag = false;
+				console.log("----save----");
+				ObjOneBook[1] = document.getElementById("BookName").value;
+				ObjOneBook[2] = document.getElementById("AuthorName").value;
+				ObjOneBook[3] = Number(document.getElementById("Year").value);
+				ObjOneBook[4] = document.getElementById("Publisher").value;
+				ObjOneBook[5] = Number(document.getElementById("CountPage").value);
+				ObjOneBook[6] = Number(document.getElementById("CountBooks").value);
+				if (!(ObjOneBook[1] !="" && ObjOneBook[2] !="" && ObjOneBook[4]!="")) {
+					alert('Please fills string fields');
+					return;
+				}				
+				let dt = new Date();
+				if (ObjOneBook[3] <1900 || ObjOneBook[3] > dt.getFullYear()) {
+					alert('Year is not correct, please fill correct year');
+					return;
+				}
+				if (ObjOneBook[5]< 1 || ObjOneBook[5] > 1000) {
+					alert('Count page is not correct, please fill correct count page');
+					return;
+				}
+				if (ObjOneBook[6]< 1 || ObjOneBook[6] > 1000) {
+					alert('Count books is not correct, please fill correct count books');
+					return;
+				}
+				/*console.log(arBooks);
+				console.log(ObjOneBook);				*/
+ 				for (var i=0;i<arBooks.length;i++) {
+					if (arBooks[i][0]==ObjOneBook[0]) {
+						for (var j=1;j<arBooks[i].length;j++) {
+							arBooks[i][j] = ObjOneBook[j];
+							flag = true;
+							
+						}
+						break;
+					}
+				}				
+				if (!flag) {
+					arBooks.push([ObjOneBook[0],ObjOneBook[1],ObjOneBook[2],ObjOneBook[3], ObjOneBook[4], ObjOneBook[5], ObjOneBook[6]]);
+				}
+					
+				console.log(arBooks);
+				cancelDialog();
+				displayBooks('');			
+			}
+			function SortBook(){
+				let sortedArr = [];
+				//console.log(document.getElementById("Select").value);
+				let num = document.getElementById("Select").value;
+				switch (num)  {
+					case "1":				
+						sortedArr = arBooks.sort((arr1, arr2) => arr1[0] - arr2[0]);
+						arBooks = sortedArr;
+						break;
+					case "2": 
+						sortedArr = arBooks.sort(function(arr1, arr2) {return arr1[1].localeCompare(arr2[1])});
+						arBooks = sortedArr;
+						break;
+					case "3": 
+						sortedArr = arBooks.sort(function(arr1, arr2) {return arr1[2].localeCompare(arr2[2])});
+						arBooks = sortedArr;
+						break;
+					case "4": 
+						sortedArr = arBooks.sort((arr1, arr2) => arr1[3] - arr2[3]);
+						arBooks = sortedArr;
+						break;
+					case "5": 
+						sortedArr = arBooks.sort(function(arr1, arr2) {return arr1[4].localeCompare(arr2[4])});
+						arBooks = sortedArr;
+						break;
+					case "6": 
+						sortedArr = arBooks.sort((arr1, arr2) => arr1[5] - arr2[5]);
+						arBooks = sortedArr;
+						break;
+					case "7": 
+						sortedArr = arBooks.sort((arr1, arr2) => arr1[6] - arr2[6]);
+						arBooks = sortedArr;
+						break;
+				}
+				displayBooksPage();
+				document.getElementById("Select").value = num;
+			}
+			//--------------------Visitor
+			function ShowDialogEditVisitor(DialogText){
+				let flagDisable="";
+				if (ObjOneVisitor[1]=='' && ObjOneVisitor[2]=='') {
+					flagDisable=" disabled ";
+				}
+				var stmp="<div id='newsletter' class='popup-wrapper'>"+
+					"<div class='popup-inner'>"+
+					"<div class='subscribe-content'>"+
+				"<div class='form-group subscribe-form-group'>"+
+					"<form class=''>"+					
+						"<div class='EditVisitor'><h3>"+DialogText+"</h3>"+
+						"<div>ID:<input type='text' name='ID' ID='VisitorID' disabled value='"+ObjOneVisitor[0]+"'></div>"+
+						"<div>Visitor:<input type='text' name='Visitor' ID='VisitorName' value='"+ObjOneVisitor[1]+"'></div>"+
+						"<div>Tel:<input type='text' name='Tel' ID='Tel' value='"+ObjOneVisitor[2]+"'></div>"+
+						"<div class='DlgBtn'>"+
+						"<input  type='button' name='SaveVisitorBtn' class='SaveBtn' value='Save' onclick='javascript:saveVisitor()'>"+
+						"<input  type='button' name='DeleteVisitorBtn' class='DelBtn' value='Del' "+flagDisable+" onclick='javascript:DelVisitor()'>"+ //
+						"<input  type='button' name='CancelVisitorBtn' class='CancelBtn' value='Cancel' onclick='javascript:cancelDialog()'>"+
+						"</div></div>"+						
+					"</form>"+
+				"</div></div></div></div>";
+				document.getElementById("top").innerHTML = stmp;
+			}
+			function AddVisitor(){
+				ObjOneVisitor[0] = GetMaxID(arVisitors);
+				ObjOneVisitor[1] = "";
+				ObjOneVisitor[2] = "";
+				ShowDialogEditVisitor("Enter new visitor");
+			}
+			function DelVisitor(){
+				let num = -1;
+				for (var i=0;i<arVisitors.length;i++) {
+					if (arVisitors[i][0]==ObjOneVisitor[0]) {
+						num = i;
+						break;
+					}
+				}
+				if (num != -1){
+					arVisitors.splice(num, 1);
+				}
+				cancelDialog();
+				displayVisitors('');
+			}
+			function EditVisitor(aID){
+ 				for (var i=0;i<arVisitors.length;i++) {
+					if (arVisitors[i][0]==aID) {
+						for (var j=0;j<arVisitors[i].length;j++) {
+							ObjOneVisitor[j] = arVisitors[i][j];
+						}
+					}
+				}
+				ShowDialogEditVisitor("Edit Visitor information");
+			}
+			function saveVisitor(){
+				flag = false;
+				console.log("----save----");
+				ObjOneVisitor[1] = document.getElementById("VisitorName").value;
+				ObjOneVisitor[2] = document.getElementById("Tel").value;
+				if (!(ObjOneVisitor[1] !="" && ObjOneVisitor[2] !="" )) {
+					alert('Please fills string fields');
+					return;
+				}				
+				/*console.log(arVisitors);
+				console.log(ObjOneVisitor);				*/
+ 				for (var i=0;i<arVisitors.length;i++) {
+					if (arVisitors[i][0]==ObjOneVisitor[0]) {
+						for (var j=1;j<arVisitors[i].length;j++) {
+							arVisitors[i][j] = ObjOneVisitor[j];
+							flag = true;							
+						}
+						break;
+					}
+				}				
+				if (!flag) {
+					arVisitors.push([ObjOneVisitor[0],ObjOneVisitor[1],ObjOneVisitor[2]]);
+				}
+					
+				console.log(arVisitors);
+				cancelDialog();
+				displayVisitors('');			
+			}
+
+			function SortVisitor(){
+				let sortedArr = [];
+				//console.log(document.getElementById("Select").value);
+				let num = document.getElementById("Select").value;
+				switch (num)  {
+					case "1":				
+						sortedArr = arVisitors.sort((arr1, arr2) => arr1[0] - arr2[0]);
+						arVisitors = sortedArr;
+						break;
+					case "2": 
+						sortedArr = arVisitors.sort(function(arr1, arr2) {return arr1[1].localeCompare(arr2[1])});
+						arVisitors = sortedArr;
+						break;
+					case "3": 
+						sortedArr = arVisitors.sort(function(arr1, arr2) {return arr1[2].localeCompare(arr2[2])});
+						arVisitors = sortedArr;
+						break;
+				}
+				displayVisitorsPage();
+				document.getElementById("Select").value = num;
+			}
+			//----------------------------card
+			function SortCard(){
+				let sortedArr = [];
+				//console.log(document.getElementById("Select").value);
+				let num = document.getElementById("Select").value;
+				let s1="";  let s2="";
+				switch (num)  {
+					case "1":				
+						sortedArr = arCards.sort(function(arr1, arr2) {console.log( arr1[0]+" "+ arr2[0] +"   "+ arr1[0] - arr2[0]); return arr1[0] - arr2[0];});
+						arCards = sortedArr;
+						break;
+					case "2": 
+						sortedArr = arCards.sort(function(arr1, arr2) {s1=getBook(arr1[1]); s2=getBook(arr2[1]); console.log(s1+"  "+s2+"  "+s1.localeCompare(s2)); return s1.localeCompare(s2);});
+						arCards = sortedArr;
+						break;
+					case "3": 
+						sortedArr = arCards.sort(function(arr1, arr2) {s1=getVisitor(arr1[2]); s2=getVisitor(arr2[2]); console.log(s1+"  "+s2+"  "+s1.localeCompare(s2)); return s1.localeCompare(s2);});
+						arCards = sortedArr;
+						break;
+					case "4": 
+						sortedArr = arCards.sort((arr1, arr2) => arr1[3] - arr2[3]);
+						arCards = sortedArr;
+						break;
+					case "5": 
+						sortedArr = arCards.sort((arr1, arr2) => arr1[4] - arr2[4]);
+						arCards = sortedArr;
+						break;
+				}
+				displayCardsPage();
+				document.getElementById("Select").value = num;
+			}
+			function ShowDialogEditCard(DialogText){
+				let flagDisable="";
+				if (ObjOneCard[1]=='' && ObjOneCard[2]=='') {
+					flagDisable=" disabled ";
+				}
+				
+				var AllVisitor = "";
+				var AllBook = "";
+				for (var i=0;i<arVisitors.length;i++) {
+					AllVisitor += "<option selected value='"+arVisitors[i][0]+"'>"+arVisitors[i][1]+"</option>";
+				}
+				for (var i=0;i<arBooks.length;i++) {
+					if ((arBooks[i][6]>0 && ObjOneCard[1]=='' && ObjOneCard[2]=='') || (ObjOneCard[1]!='' || ObjOneCard[2]!='')){
+						AllBook += "<option selected value='"+arBooks[i][0]+"'>"+arBooks[i][1]+"</option>";
+					}
+				}
+				
+				var stmp="<div id='newsletter' class='popup-wrapper'>"+
+					"<div class='popup-inner'>"+
+					"<div class='subscribe-content'>"+
+				"<div class='form-group subscribe-form-group'>"+
+					"<form class=''>"+					
+						"<div class='EditCard'><h3>"+DialogText+"</h3>"+
+						"<div>ID:<input type='text' name='ID' class='edit' ID='CardID' disabled value='"+ObjOneCard[0]+"'></div>"+
+						"<div>Visitor:<select class='edit' ID='SelectVisitor' value='"+ObjOneCard[1]+"'>"+AllVisitor+"</select></div>"+						
+						"<div>Book:<select class='edit' ID='SelectBook' value='"+ObjOneCard[2]+"'>"+AllBook+"</select></div>"+						
+						"<div>Borrow Date:<input type='date' class='edit' ID='BorrowDate' value='"+ObjOneCard[3]+"'></div>"+
+						"<div>Return Date:<input type='date' class='edit' ID='ReturnDate' value='"+ObjOneCard[4]+"'></div>"+						
+						"<div class='DlgBtn'>"+
+						"<input  type='button' name='SaveCardBtn' class='SaveBtn' value='Save' onclick='javascript:saveCard()'>"+
+						//"<input  type='button' name='DeleteCardBtn' class='DelBtn' value='Del' "+flagDisable+" onclick='javascript:DelCard()'>"+ //
+						"<input  type='button' name='CancelCardBtn' class='CancelBtn' value='Cancel' onclick='javascript:cancelDialog()'>"+
+						"</div></div>"+						
+					"</form>"+
+				"</div></div></div></div>";
+				document.getElementById("top").innerHTML = stmp;
+			}
+			function AddCard(){
+				var today  = new Date();
+				//var dateFormat = require('dateformat');
+				ObjOneCard[0] = GetMaxID(arCards);				
+				ObjOneCard[1] = "";
+				ObjOneCard[2] = "";
+				ObjOneCard[3] = today.toISOString().split('T')[0];//dateFormat(today, "yyyy-mm-dd");//String(Date.now());
+				ObjOneCard[4] = "";//dateFormat(today, "yyyy-mm-dd");//String(Date.now());
+				ShowDialogEditCard("Enter new Card");
+			}
+			function DelCard(){
+				let num = -1;
+				for (var i=0;i<arCards.length;i++) {
+					if (arCards[i][0]==ObjOneCard[0]) {
+						num = i;
+						break;
+					}
+				}
+				if (num != -1){
+					arCards.splice(num, 1);
+				}
+				cancelDialog();
+				displayCards('');
+			}
+			function EditCard(aID){
+ 				for (var i=0;i<arCards.length;i++) {
+					if (arCards[i][0]==aID) {
+						for (var j=0;j<arCards[i].length;j++) {
+							ObjOneCard[j] = arCards[i][j];
+						}
+					}
+				}
+				var today  = new Date();
+				ObjOneCard[4] = today.toISOString().split('T')[0];//dateFormat(today, "yyyy-mm-dd");//String(Date.now());
+				ShowDialogEditCard("Edit Card information");
+			}
+			function saveCard(){
+				flag = false;
+				console.log("----save----");
+				ObjOneCard[0] = Number(document.getElementById("CardID").value);
+				ObjOneCard[1] = Number(document.getElementById("SelectVisitor").value);
+				ObjOneCard[2] = Number(document.getElementById("SelectBook").value);
+				ObjOneCard[3] = document.getElementById("BorrowDate").value;
+				ObjOneCard[4] = document.getElementById("ReturnDate").value;
+				if (!(ObjOneCard[1] !="" && ObjOneCard[2] !="" )) {
+					alert('Please fills fields');
+					return;
+				}				
+				/*console.log(arCards);
+				console.log(ObjOneCard);				*/
+ 				for (var i=0;i<arCards.length;i++) {
+					if (arCards[i][0]==ObjOneCard[0]) {
+						for (var j=1;j<arCards[i].length;j++) {
+							arCards[i][j] = ObjOneCard[j];
+							flag = true;							
+						}
+						break;
+					}
+				}				
+				if (!flag) {
+					arCards.push([ObjOneCard[0],ObjOneCard[1],ObjOneCard[2],ObjOneCard[3],ObjOneCard[4]]);
+				}
+					
+				console.log(arCards);
+				cancelDialog();
+				displayCards('');			
+			
+				
+				for (var j=0;j<arBooks.length;j++) {
+					if (ObjOneCard[2]==arBooks[j][0]){
+						//книгу выдали
+						if (ObjOneCard[4] == "") {
+							arBooks[j][6]--;
+						} 
+						//книгу вернули
+						else {
+							arBooks[j][6]++;
+						}
+						break;
+					}				
+				}
+				
+			}
+		</script>
+	</body>
+</html>
